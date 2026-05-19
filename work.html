@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nonexistent woman — fuji__moon</title>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://use.typekit.net/ihk0edh.css">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -86,7 +87,7 @@ html, body {
 /* back link — needs pointer events */
 #back {
   pointer-events: all;
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .58rem;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -103,7 +104,7 @@ html, body {
 
 .label .mono {
   display: block;
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .56rem;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -136,7 +137,7 @@ html, body {
 
 /* counter */
 #counter {
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .56rem;
   letter-spacing: .18em;
   color: rgba(245,242,236,.22);
@@ -169,7 +170,7 @@ html, body {
 }
 
 #hint p {
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .54rem;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -186,7 +187,7 @@ html, body {
 /* scroll hint right */
 #scroll-hint {
   writing-mode: vertical-rl;
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .5rem;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -204,7 +205,7 @@ html, body {
 #nav-btns button {
   background: none;
   border: none;
-  font-family: 'Courier Prime', monospace;
+  font-family: 'EB Garamond', Georgia, serif;
   font-size: .56rem;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -252,17 +253,12 @@ html, body {
   <!-- Bottom bar -->
   <div id="bottombar">
     <div id="nav-btns">
-      <button onclick="changeWork(-1)">← prev</button>
-      <button onclick="changeWork(+1)">next →</button>
+      <button onclick="changeWork(-1)">← Prev</button>
+      <button onclick="changeWork(+1)">Next →</button>
     </div>
   </div>
 
-  <div id="hint">
-    <p>move cursor to reveal</p>
-    <p>scroll — resize light</p>
-  </div>
 
-  <div id="scroll-hint" style="position:absolute;right:2.8rem;top:50%;transform:translateY(-50%);z-index:20;">scroll · resize</div>
 </div>
 
 <script>
