@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nonexistent woman — fuji__moon</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #1a1814;
+  --paper: #f5f2ec;
+  --muted: rgba(26,24,20,0.38);
+}
+
+html, body {
+  width: 100%; height: 100%;
+  overflow: hidden;
+  background: var(--ink);
+  cursor: none;
+  font-family: 'EB Garamond', Georgia, serif;
+}
+
+/* cursor */
+#cursor {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: rgba(245,242,236,0.6);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: difference;
+}
+
+/* ── Stage ── */
+#stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Layer A: NeW_a — AI reference (常時表示、canvasの上) */
+#layer-a {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(.5) contrast(1.1);
+  mix-blend-mode: lighten;
+  pointer-events: none;
+}
+
+/* Layer B: NeW_p — ballpoint pen (canvasの下、スポットで見える) */
+#layer-b {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background-size: cover;
+  background-position: center;
+}
+
+/* canvas — layer-bの上・layer-aの下。全面黒でlayer-bを隠し、スポットだけ透ける */
+#glow {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 3;
+}
+
+/* ── Nav (top) ── */
+#topbar {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 2.4rem 3rem;
+  pointer-events: none;
+}
+
+/* back link — needs pointer events */
+#back {
+  pointer-events: all;
+  font-family: 'Courier Prime', monospace;
+  font-size: .58rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,.3);
+  text-decoration: none;
+  transition: color .2s;
+  line-height: 1;
+}
+
+#back:hover { color: rgba(245,242,236,.8); }
+
+/* Labels */
+.label { line-height: 1.6; }
+
+.label .mono {
+  display: block;
+  font-family: 'Courier Prime', monospace;
+  font-size: .56rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+
+.label .serif {
+  display: block;
+  font-family: 'EB Garamond', serif;
+  font-style: italic;
+  font-size: .95rem;
+  margin-top: .25rem;
+  letter-spacing: .03em;
+}
+
+#label-a .mono  { color: rgba(245,242,236,.28); }
+#label-a .serif { color: rgba(245,242,236,.38); }
+
+#label-b {
+  position: absolute;
+  top: 2.4rem;
+  left: 3rem;
+  z-index: 20;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .35s;
+}
+
+#label-b .mono  { color: rgba(26,24,20,.38); }
+#label-b .serif { color: rgba(26,24,20,.5); }
+
+/* counter */
+#counter {
+  font-family: 'Courier Prime', monospace;
+  font-size: .56rem;
+  letter-spacing: .18em;
+  color: rgba(245,242,236,.22);
+  pointer-events: none;
+  line-height: 1;
+}
+
+/* ── Bottom bar ── */
+#bottombar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  z-index: 20;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 2rem 3rem;
+  pointer-events: none;
+}
+
+/* hint */
+#hint {
+  text-align: center;
+  pointer-events: none;
+  transition: opacity .7s;
+  position: absolute;
+  left: 50%;
+  bottom: 2rem;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+
+#hint p {
+  font-family: 'Courier Prime', monospace;
+  font-size: .54rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,.28);
+}
+
+#hint p + p {
+  margin-top: .3rem;
+  color: rgba(245,242,236,.14);
+}
+
+#hint.gone { opacity: 0; }
+
+/* scroll hint right */
+#scroll-hint {
+  writing-mode: vertical-rl;
+  font-family: 'Courier Prime', monospace;
+  font-size: .5rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,.12);
+  pointer-events: none;
+}
+
+/* prev / next */
+#nav-btns {
+  display: flex;
+  gap: 2rem;
+  pointer-events: all;
+}
+
+#nav-btns button {
+  background: none;
+  border: none;
+  font-family: 'Courier Prime', monospace;
+  font-size: .56rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,.25);
+  cursor: pointer;
+  padding: .2rem 0;
+  transition: color .2s;
+}
+
+#nav-btns button:hover { color: rgba(245,242,236,.8); }
+
+/* ── Responsive ── */
+@media (max-width: 640px) {
+  #topbar { padding: 1.6rem 1.6rem; }
+  #bottombar { padding: 1.6rem 1.6rem; }
+  #label-b { top: 1.6rem; left: 1.6rem; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor"></div>
+
+<div id="stage">
+  <div id="layer-a"></div>
+  <div id="layer-b"></div>
+  <canvas id="glow"></canvas>
+
+  <!-- Top bar -->
+  <div id="topbar">
+    <a id="back" href="index.html">← Works</a>
+    <div id="label-a" class="label">
+      <span class="mono" id="la-id">NeW_a_001 — AI reference · 2023</span>
+      <span class="serif">Nonexistent woman</span>
+    </div>
+    <div id="counter">001 / 012</div>
+  </div>
+
+  <!-- Label B (shown inside spotlight) -->
+  <div id="label-b" class="label">
+    <span class="mono" id="lb-id">NeW_p_001 — ballpoint pen · 2023</span>
+    <span class="serif">Nonexistent woman</span>
+  </div>
+
+  <!-- Bottom bar -->
+  <div id="bottombar">
+    <div id="nav-btns">
+      <button onclick="changeWork(-1)">← prev</button>
+      <button onclick="changeWork(+1)">next →</button>
+    </div>
+  </div>
+
+  <div id="hint">
+    <p>move cursor to reveal</p>
+    <p>scroll — resize light</p>
+  </div>
+
+  <div id="scroll-hint" style="position:absolute;right:2.8rem;top:50%;transform:translateY(-50%);z-index:20;">scroll · resize</div>
+</div>
+
+<script>
+const works = [
+  { id:'001', year:2023 },
+  { id:'002', year:2023 },
+  { id:'003', year:2024 },
+  { id:'004', year:2024 },
+  { id:'005', year:2024 },
+  { id:'006', year:2024 },
+  { id:'007', year:2024 },
+  { id:'008', year:2024 },
+  { id:'009', year:2024 },
+  { id:'010', year:2024 },
+  { id:'011', year:2024 },
+  { id:'012', year:2025 },
+];
+
+// URLパラメータから作品IDを取得
+const params = new URLSearchParams(location.search);
+const initId = params.get('id') || '001';
+let current = works.findIndex(w => w.id === initId);
+if (current < 0) current = 0;
+
+const layerA  = document.getElementById('layer-a');
+const layerB  = document.getElementById('layer-b');
+const canvas  = document.getElementById('glow');
+const ctx     = canvas.getContext('2d');
+const labelB  = document.getElementById('label-b');
+const laId    = document.getElementById('la-id');
+const lbId    = document.getElementById('lb-id');
+const counter = document.getElementById('counter');
+const hint    = document.getElementById('hint');
+const cursor  = document.getElementById('cursor');
+
+// マウスの実座標
+let mx = -999, my = -999;
+// スポットライトの現在座標（イージングで遅れてついてくる）
+let sx = -999, sy = -999;
+let radius = 130;
+let interacted = false;
+let animT = 0;
+
+// イージング係数（0.06 = ゆっくり、0.12 = やや速め）
+const EASE = 0.11;
+
+function load(i) {
+  const w = works[i];
+  document.title = `NeW_${w.id} — Nonexistent woman`;
+  layerA.style.backgroundImage = `url('images/NeW_a_${w.id}.jpg')`;
+  layerB.style.backgroundImage = `url('images/NeW_p_${w.id}.jpg')`;
+  laId.textContent = `NeW_a_${w.id} — AI reference · ${w.year}`;
+  lbId.textContent = `NeW_p_${w.id} — ballpoint pen · ${w.year}`;
+  counter.textContent = `${w.id} / 012`;
+  history.replaceState(null, '', `work.html?id=${w.id}`);
+}
+
+function changeWork(dir) {
+  current = ((current + dir) % 12 + 12) % 12;
+  load(current);
+}
+
+// Canvas resize
+function resizeCanvas() {
+  canvas.width  = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+// Spotlight render
+function drawSpotlight(x, y, r) {
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const blurSize = r * 0.7;
+  const innerR   = Math.max(0, r - blurSize * 0.5);
+  const outerR   = r + blurSize * 0.5;
+
+  // 1. 全面を黒で塗る（layer-bを隠す）
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = 'rgba(0,0,0,1)';
+  ctx.fillRect(0, 0, W, H);
+
+  // 2. スポット部分をdestination-outで透明に（ペン画が透けて見える）
+  const grad = ctx.createRadialGradient(x, y, innerR, x, y, outerR);
+  grad.addColorStop(0,   'rgba(0,0,0,1)');
+  grad.addColorStop(0.55,'rgba(0,0,0,0.98)');
+  grad.addColorStop(0.8, 'rgba(0,0,0,0.6)');
+  grad.addColorStop(1,   'rgba(0,0,0,0)');
+
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(x, y, outerR, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.globalCompositeOperation = 'source-over';
+  labelB.style.opacity = Math.min(.95, Math.max(0, (r - 45) / 85));
+}
+
+// Mouse — 座標だけ記録（スポットはtick()でイージング）
+document.addEventListener('mousemove', e => {
+  mx = e.clientX;
+  my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top  = my + 'px';
+
+  if (!interacted) {
+    interacted = true;
+    // スポットの初期位置をマウス位置に合わせる（最初のジャンプを防ぐ）
+    sx = mx; sy = my;
+    hint.classList.add('gone');
+  }
+});
+
+// Scroll to resize
+window.addEventListener('wheel', e => {
+  radius = Math.max(40, Math.min(480, radius - e.deltaY * 0.35));
+}, { passive: true });
+
+// Touch support (mobile)
+window.addEventListener('touchmove', e => {
+  const t = e.touches[0];
+  mx = t.clientX; my = t.clientY;
+  if (!interacted) { interacted = true; sx = mx; sy = my; hint.classList.add('gone'); }
+}, { passive: true });
+
+window.addEventListener('touchstart', e => {
+  const t = e.touches[0];
+  mx = t.clientX; my = t.clientY;
+  if (!interacted) { interacted = true; sx = mx; sy = my; hint.classList.add('gone'); }
+}, { passive: true });
+
+// メインループ — イージングとスポット描画をここで行う
+function tick() {
+  animT += 0.018;
+
+  if (!interacted) {
+    // アイドル時：中央でパルス
+    const pr = 95 + Math.sin(animT) * 35;
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    sx = cx; sy = cy;
+    drawSpotlight(cx, cy, pr);
+  } else {
+    // イージング：スポット座標をマウスに向かってゆっくり近づける
+    sx += (mx - sx) * EASE;
+    sy += (my - sy) * EASE;
+    drawSpotlight(sx, sy, radius);
+  }
+
+  requestAnimationFrame(tick);
+}
+
+// keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') changeWork(+1);
+  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   changeWork(-1);
+  if (e.key === 'Escape') location.href = 'index.html';
+});
+
+window.addEventListener('resize', resizeCanvas);
+
+load(current);
+resizeCanvas();
+tick();
+</script>
+</body>
+</html>

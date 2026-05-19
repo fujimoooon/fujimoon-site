@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nonexistent woman — fuji__moon</title>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --ink:   #1a1814;
+  --paper: #f5f2ec;
+  --muted: rgba(26,24,20,0.38);
+  --line:  rgba(26,24,20,0.1);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: 'EB Garamond', Georgia, serif;
+  cursor: none;
+  overflow-x: hidden;
+}
+
+/* cursor */
+#cursor {
+  position: fixed;
+  width: 6px; height: 6px;
+  background: var(--ink);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  mix-blend-mode: multiply;
+}
+
+/* vline bg */
+.vlines {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: .04;
+  background-image: repeating-linear-gradient(
+    to right, var(--ink) 0, var(--ink) .5px, transparent .5px, transparent 38px
+  );
+}
+
+/* ── Nav ── */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 300;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 2rem 3.5rem;
+  mix-blend-mode: difference;
+}
+
+.nav-title {
+  font-family: 'Courier Prime', monospace;
+  font-size: .65rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: #f5f2ec;
+  line-height: 1.6;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.2rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: 'Courier Prime', monospace;
+  font-size: .62rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.6);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.nav-links a:hover { color: #f5f2ec; }
+
+/* ── Hero video ── */
+#hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  background: var(--ink);
+}
+
+#hero video {
+  position: absolute;
+  inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: .72;
+}
+
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(14,13,11,0.2) 0%,
+    rgba(14,13,11,0)   40%,
+    rgba(14,13,11,0.7) 100%
+  );
+}
+
+.hero-text {
+  position: absolute;
+  bottom: 3.5rem;
+  left: 3.5rem;
+  z-index: 2;
+}
+
+.hero-label {
+  font-family: 'Courier Prime', monospace;
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.45);
+  margin-bottom: 1.2rem;
+}
+
+.hero-title {
+  font-size: clamp(3.5rem, 7.5vw, 7rem);
+  font-weight: 400;
+  line-height: .9;
+  letter-spacing: -.025em;
+  color: #f5f2ec;
+}
+
+.hero-title em { font-style: italic; display: block; }
+
+.scroll-cue {
+  position: absolute;
+  bottom: 3.5rem;
+  right: 3.5rem;
+  z-index: 2;
+  writing-mode: vertical-rl;
+  font-family: 'Courier Prime', monospace;
+  font-size: .52rem;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,0.3);
+}
+
+/* ── Works grid ── */
+#works {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 3.5rem 6rem;
+}
+
+.works-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 2.8rem;
+  padding-bottom: 1.2rem;
+  border-bottom: .5px solid var(--line);
+}
+
+.works-header h2 {
+  font-family: 'Courier Prime', monospace;
+  font-size: .62rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: var(--muted);
+}
+
+.works-header span {
+  font-family: 'Courier Prime', monospace;
+  font-size: .58rem;
+  letter-spacing: .15em;
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.thumb {
+  background: var(--paper);
+  aspect-ratio: 1;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+
+.thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform .55s cubic-bezier(.25,.46,.45,.94),
+              filter .55s ease;
+  filter: grayscale(12%);
+}
+
+.thumb:hover img {
+  transform: scale(1.04);
+  filter: grayscale(0%);
+}
+
+.thumb-info {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: .9rem 1rem .8rem;
+  background: linear-gradient(transparent, rgba(14,13,11,.55));
+  opacity: 0;
+  transition: opacity .3s;
+}
+
+.thumb:hover .thumb-info { opacity: 1; }
+
+.thumb-id {
+  font-family: 'Courier Prime', monospace;
+  font-size: .55rem;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  color: rgba(245,242,236,.75);
+}
+
+/* ── About ── */
+#about {
+  position: relative;
+  z-index: 1;
+  padding: 5rem 3.5rem;
+  border-top: .5px solid var(--line);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+}
+
+.about-kicker {
+  font-family: 'Courier Prime', monospace;
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.about-body {
+  font-size: 1rem;
+  line-height: 2;
+  color: var(--muted);
+}
+
+.about-body p + p { margin-top: 1.2em; }
+
+.about-en {
+  font-size: .98rem;
+  line-height: 1.95;
+  color: var(--muted);
+  font-style: italic;
+}
+
+.about-en p + p { margin-top: 1.2em; }
+
+/* ── Footer ── */
+footer {
+  position: relative;
+  z-index: 1;
+  border-top: .5px solid var(--line);
+  padding: 2rem 3.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.footer-copy {
+  font-family: 'Courier Prime', monospace;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  color: var(--muted);
+}
+
+.footer-links {
+  display: flex;
+  gap: 2rem;
+}
+
+.footer-links a {
+  font-family: 'Courier Prime', monospace;
+  font-size: .58rem;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+
+.footer-links a:hover { color: var(--ink); }
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(3, 1fr); }
+}
+
+@media (max-width: 640px) {
+  nav { padding: 1.5rem 1.8rem; }
+  .hero-text { left: 1.8rem; bottom: 2.5rem; }
+  .hero-title { font-size: 3rem; }
+  .scroll-cue { right: 1.8rem; bottom: 2.5rem; }
+  #works { padding: 3rem 1.8rem 4rem; }
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  #about { grid-template-columns: 1fr; gap: 2.5rem; padding: 3.5rem 1.8rem; }
+  footer { flex-direction: column; gap: 1.2rem; padding: 1.8rem; text-align: center; }
+}
+</style>
+</head>
+<body>
+
+<div class="vlines"></div>
+<div id="cursor"></div>
+
+<nav>
+  <div class="nav-title">fuji__moon</div>
+  <ul class="nav-links">
+    <li><a href="#works">Works</a></li>
+    <li><a href="#about">About</a></li>
+  </ul>
+</nav>
+
+<!-- Hero -->
+<section id="hero">
+  <!--
+    動画ファイルを images/hero.mp4 に配置してください。
+    WebM形式も用意すると互換性が上がります: images/hero.webm
+  -->
+  <video autoplay muted loop playsinline>
+    <source src="images/hero.mp4" type="video/mp4">
+    <source src="images/hero.webm" type="video/webm">
+  </video>
+  <div class="hero-overlay"></div>
+  <div class="hero-text">
+    <p class="hero-label">fuji__moon — 2023–2025</p>
+    <h1 class="hero-title">Non<em>existent</em><br>woman</h1>
+  </div>
+  <span class="scroll-cue">scroll</span>
+</section>
+
+<!-- Works -->
+<section id="works">
+  <div class="works-header">
+    <h2>Works</h2>
+    <span>NeW_p_001 – 012 &nbsp;/&nbsp; ballpoint pen on paper</span>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- About -->
+<section id="about">
+  <div>
+    <p class="about-kicker">Concept</p>
+    <div class="about-body">
+      <p>AIが生成した架空の女性を参照源とし、ボールペンの縦線のみで影と形を描く12点のシリーズ。線の密度が明暗を生み、密集と余白の間に輪郭が浮かぶ。</p>
+      <p>被写体はすべて女性であり、すべて無表情である。モデルは存在しない。存在したことがない。</p>
+      <p>縦線という単一の制約のもとで、描くことと生成することの境界を問う試み。</p>
+    </div>
+  </div>
+  <div>
+    <p class="about-kicker">Statement</p>
+    <div class="about-en">
+      <p>A series of twelve ballpoint pen drawings, each referencing an AI-generated portrait of a woman who has never existed.</p>
+      <p>Form and shadow emerge solely through vertical lines — density creates darkness, spacing creates light. All subjects are female. All are expressionless.</p>
+      <p>The work operates within a single constraint: only vertical lines. Within that constraint, it asks what it means to render a face that was itself rendered.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span class="footer-copy">fuji__moon — 2025</span>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/fuji__moon" target="_blank" rel="noopener">Instagram</a>
+    <a href="https://tokyoartbookfair.com" target="_blank" rel="noopener">TABF 2027</a>
+  </div>
+</footer>
+
+<script>
+const works = [
+  { id:'001', year:2023 },
+  { id:'002', year:2023 },
+  { id:'003', year:2024 },
+  { id:'004', year:2024 },
+  { id:'005', year:2024 },
+  { id:'006', year:2024 },
+  { id:'007', year:2024 },
+  { id:'008', year:2024 },
+  { id:'009', year:2024 },
+  { id:'010', year:2024 },
+  { id:'011', year:2024 },
+  { id:'012', year:2025 },
+];
+
+// Build grid
+const grid = document.getElementById('grid');
+works.forEach(w => {
+  const a = document.createElement('a');
+  a.className = 'thumb';
+  a.href = `work.html?id=${w.id}`;
+  // サムネイルは NeW_p（ボールペン画）を使用
+  a.innerHTML = `
+    <img src="images/NeW_p_${w.id}.jpg" alt="NeW_p_${w.id}" loading="lazy">
+    <div class="thumb-info">
+      <span class="thumb-id">NeW_p_${w.id} · ${w.year}</span>
+    </div>
+  `;
+  grid.appendChild(a);
+});
+
+// Custom cursor
+const cursor = document.getElementById('cursor');
+document.addEventListener('mousemove', e => {
+  cursor.style.left = e.clientX + 'px';
+  cursor.style.top  = e.clientY + 'px';
+});
+</script>
+</body>
+</html>
