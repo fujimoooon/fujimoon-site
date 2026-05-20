@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Nonexistent woman — fuji__moon</title>
 <link rel="icon" type="image/jpeg" href="images/NeW_a_001.jpg">
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,400&family=Courier+Prime&display=swap" rel="stylesheet">
@@ -157,7 +157,7 @@ html, body {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  padding: 2rem 3rem;
+  padding: 2rem 3rem 3.5rem;
   pointer-events: none;
   mix-blend-mode: difference;
 }
@@ -246,7 +246,9 @@ html, body {
 /* ── Responsive ── */
 @media (max-width: 640px) {
   #topbar { padding: 1.6rem 1.6rem; }
-  #bottombar { padding: 1.6rem 1.6rem; }
+  #bottombar {
+    padding: 1.6rem 1.6rem calc(1.6rem + env(safe-area-inset-bottom, 1rem));
+  }
   #label-b { top: 1.6rem; left: 1.6rem; }
   #btn-next {
     position: static;
