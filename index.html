@@ -39,18 +39,6 @@ body {
   mix-blend-mode: multiply;
 }
 
-/* vline bg */
-.vlines {
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  opacity: .04;
-  background-image: repeating-linear-gradient(
-    to right, var(--ink) 0, var(--ink) .5px, transparent .5px, transparent 38px
-  );
-}
-
 /* ── Nav ── */
 nav {
   position: fixed;
@@ -367,7 +355,6 @@ footer {
 </head>
 <body>
 
-<div class="vlines"></div>
 <div id="cursor"></div>
 
 <nav>
